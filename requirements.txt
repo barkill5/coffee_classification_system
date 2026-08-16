@@ -1,0 +1,6 @@
+torch --index-url https://pytorch.org
+torchvision --index-url https://pytorch.org
+fastapi
+uvicorn
+python-multipart
+Pillow
