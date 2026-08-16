@@ -58,9 +58,17 @@ async def predict_image(file: UploadFile = File(...)):
         
         with torch.no_grad():
             outputs = model(batch_t)
-            probabilities = torch.nn.functional.softmax(outputs, dim=0)
+            # Извлекаем первую (и единственную) строку батча и переводим в вероятности (dim=1)
+            probabilities = torch.nn.functional.softmax(outputs, dim=1)[0]
             
-        result = {class_names[i]: round(probabilities[i].item() * 100, 2) for i in range(len(class_names))}
+            # Принудительно конвертируем тензор в обычный список Python
+            prob_list = probabilities.tolist()
+            
+        # Строим ответ, используя гарантированно чистые числа Python типа float
+        result = {
+            class_names[0]: round(prob_list[0] * 100, 2),
+            class_names[1]: round(prob_list[1] * 100, 2)
+        }
         return {"success": True, "predictions": result}
     except Exception as e:
         return {"success": False, "error": str(e)}
