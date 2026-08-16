@@ -60,7 +60,7 @@ async def predict_image(file: UploadFile = File(...)):
             outputs = model(batch_t)
             probabilities = torch.nn.functional.softmax(outputs, dim=0)
             
-        result = {class_names[i]: round(float(probabilities[i]) * 100, 2) for i in range(len(class_names))}
+        result = {class_names[i]: round(probabilities[i].item() * 100, 2) for i in range(len(class_names))}
         return {"success": True, "predictions": result}
     except Exception as e:
         return {"success": False, "error": str(e)}
